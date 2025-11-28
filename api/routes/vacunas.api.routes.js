@@ -1,13 +1,27 @@
-import express from "express"
-import * as controllers from "../controllers/vacunas.api.controller.js"
+import express from "express";
+import * as controllers from "../controllers/vacunas.api.controller.js";
 
-const route = express.Router()
+import { vacunasValidate } from "../../middleware/vacunasValidate.js";
+import { vacunasValidatePatch } from "../../middleware/vacunasValidatePatch.js";
 
-route.get("/", controllers.getVacunas)
-route.get("/:id", controllers.getVacunasById)
-route.post("/:usuarioId", controllers.crearVacuna)
-route.delete("/:id", controllers.deleteVacunaLogico)
-route.put("/:id", controllers.reemplazarVacuna)
-route.patch("/:id", controllers.editarVacunaParcial)
+const route = express.Router();
 
-export default route
+// LISTADO GENERAL
+route.get("/", controllers.getVacunas);
+
+// DETALLE
+route.get("/:id", controllers.getVacunasById);
+
+// CREAR VACUNA
+route.post("/", vacunasValidate, controllers.crearVacuna);
+
+// REEMPLAZAR
+route.put("/:id", vacunasValidate, controllers.reemplazarVacuna);
+
+// EDITAR PARCIAL
+route.patch("/:id", vacunasValidatePatch, controllers.editarVacunaParcial);
+
+// ELIMINAR
+route.delete("/:id", controllers.deleteVacunaLogico);
+
+export default route;

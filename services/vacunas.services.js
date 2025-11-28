@@ -1,58 +1,83 @@
-import { MongoClient, ObjectId } from "mongodb"
+// import { MongoClient, ObjectId } from "mongodb";
 
-const client = new MongoClient("mongodb+srv://admin:admin@hibridas.qaozghl.mongodb.net/")
-const db = client.db("AH20232CP1")
+// const client = new MongoClient(
+//   "mongodb+srv://admin:admin@hibridas.qaozghl.mongodb.net/"
+// );
+
+// const db = client.db("AH20232CP1");
+// const vacunas = db.collection("vacunas");
+
+// export async function getVacunas() {
+//   await client.connect();
+//   return vacunas.find().toArray();
+// }
+
+// export async function getVacunasUsuario(userId) {
+//   await client.connect();
+//   return vacunas.find({ userId }).toArray();
+// }
+
+// export async function guardarVacuna(vacuna) {
+//   await client.connect();
+//   await vacunas.insertOne(vacuna);
+//   return vacuna;
+// }
 
 
 
-export async function getVacunas(filter = {}) {
-    const filterMongo = { eliminado: { $ne: true } }
 
-    if (filter.nombre) {
-        filterMongo.nombre = { $regex: filter.nombre, $options: 'i' }
-    }
+import { MongoClient, ObjectId } from "mongodb";
 
-    if (filter.obligatoria !== undefined) {
-        filterMongo.obligatoria = filter.obligatoria === "true"
-    }
+const client = new MongoClient(
+  "mongodb+srv://admin:admin@hibridas.qaozghl.mongodb.net/"
+);
 
-    if (filter.grupo) {
-        filterMongo.grupo = { $regex: filter.grupo, $options: 'i' }
-    }
+const db = client.db("AH20232CP1");
+const vacunas = db.collection("vacunas");
 
-    if (filter.edad_aplicacion) {
-        filterMongo.edad_aplicacion = { $regex: filter.edad_aplicacion, $options: 'i' }
-    }
-
-    await client.connect()
-    return db.collection("vacunas").find(filterMongo).toArray()
+export async function getVacunas(query = {}) {
+  await client.connect();
+  return vacunas.find(query).toArray();
 }
 
-
-export async function getVacunasById(id) {
-    await client.connect()
-    return db.collection("vacunas").findOne({ _id: new ObjectId(id) })
+export async function getVacunasById(id, userId) {
+  await client.connect();
+  return vacunas.findOne({ 
+    _id: new ObjectId(id),
+    userId 
+  });
 }
 
 export async function guardarVacuna(vacuna) {
-    await client.connect()
-    return db.collection("vacunas").insertOne(vacuna)
+  await client.connect();
+  await vacunas.insertOne(vacuna);
+  return vacuna;
 }
 
-
-export function editarVacuna(vacuna, id) {
-    return db.collection("vacunas").replaceOne({ _id: new ObjectId(id) }, vacuna)
+export async function editarVacuna(vacuna, id, userId) {
+  await client.connect();
+  const result = await vacunas.findOneAndReplace(
+    { _id: new ObjectId(id), userId },
+    vacuna,
+    { returnDocument: "after" }
+  );
+  return result;
 }
 
-export function eliminarVacunaLogico(id) {
-    return db.collection("vacunas").updateOne({ _id: new ObjectId(id) }, {
-        $set: { eliminado: true }
-    })
+export async function editarVacunaParcial(id, userId, datos) {
+  await client.connect();
+  const result = await vacunas.findOneAndUpdate(
+    { _id: new ObjectId(id), userId },
+    { $set: datos },
+    { returnDocument: "after" }
+  );
+  return result;
 }
 
-export function editarVacunaParcial(id, vacuna) {
-    return db.collection("vacunas").updateOne({ _id: new ObjectId(id) }, { $set: vacuna })
+export async function eliminarVacunaLogico(id, userId) {
+  await client.connect();
+  return vacunas.updateOne(
+    { _id: new ObjectId(id), userId },
+    { $set: { deleted: true } }
+  );
 }
-
-
-
