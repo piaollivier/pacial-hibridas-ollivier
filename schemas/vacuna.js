@@ -10,7 +10,7 @@ export const vacunaSchema = yup.object().shape({
         .min(2, "El campo 'previene' no puede estar vacío"),
 
     edad_aplicacion: yup
-        .string()   // <-- ahora acepta lo que manda tu form
+        .string()  
         .required("La edad de aplicación es obligatoria"),
 
     dosis: yup.string()
@@ -21,14 +21,14 @@ export const vacunaSchema = yup.object().shape({
 
     obligatoria: yup
         .boolean()
-        .notRequired(),   // <-- FALSE ahora es válido
+        .notRequired(),  
 
     fecha_colocacion: yup
         .string()
-        .notRequired(),   // <-- permite date
+        .notRequired(),  
 
     imagen: yup.string()
-        .notRequired(),   // <-- porque no la mandás
+        .notRequired(),   
 
     link: yup.string()
         .url("El campo 'link' debe ser una URL válida")

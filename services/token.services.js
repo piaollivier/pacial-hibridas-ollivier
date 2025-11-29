@@ -13,7 +13,7 @@ export async function createToken(userApp) {
     await client.connect();
 
     const payload = {
-        _id: userApp._id.toString(),   // 👈 SOLO ESTO NECESITÁS
+        _id: userApp._id.toString(),   
         email: userApp.email
     };
 
@@ -37,7 +37,7 @@ export async function validateToken(token) {
 
         const sessionActive = await tokens.findOne({
             token,
-            userAppId: new ObjectId(payload._id),   // 👈 AHORA SÍ EXISTE
+            userAppId: new ObjectId(payload._id),  
         });
 
         if (!sessionActive) throw new Error("Token inválido");

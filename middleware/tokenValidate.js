@@ -7,7 +7,7 @@ export async function tokenValidate(req, res, next) {
 
     const userData = await validateToken(token);
 
-    req.user = userData;  // 👈 GUARDAMOS EL USUARIO
+    req.user = userData;  
 
     next();
   } catch (err) {

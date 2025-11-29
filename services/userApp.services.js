@@ -8,23 +8,22 @@ const client = new MongoClient(
 const db = client.db("AH20232CP1");
 
 export async function createUserApp(userApp) {
-  await client.connect();
+  await client.connect()
+  const existingUser = await db.collection("userApps").findOne({ email: userApp.email })
+  if (existingUser) {
+      throw new Error("Email existente, no se puede crear el usuario")
+  }
 
-  const exist = await db.collection("userApps").findOne({ email: userApp.email });
-  if (exist) throw new Error("Email existente");
+  const newUser = { email: userApp.email, password: userApp.password }
+  if (userApp.username) 
+      newUser.username = userApp.username
 
-  const hashed = await bcrypt.hash(userApp.password, 10);
+  newUser.password = await bcrypt.hash(newUser.password, 10)
 
-  const newUser = {
-    username: userApp.username,
-    email: userApp.email,
-    password: hashed,
-  };
-
-  await db.collection("userApps").insertOne(newUser);
-
-  return { ...newUser, password: undefined };
+  await db.collection("userApps").insertOne(newUser)
+  return { ...newUser, password: undefined }
 }
+
 
 export async function login(userApp) {
   await client.connect();

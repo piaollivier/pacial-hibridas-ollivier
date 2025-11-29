@@ -1,31 +1,3 @@
-// import { MongoClient, ObjectId } from "mongodb";
-
-// const client = new MongoClient(
-//   "mongodb+srv://admin:admin@hibridas.qaozghl.mongodb.net/"
-// );
-
-// const db = client.db("AH20232CP1");
-// const vacunas = db.collection("vacunas");
-
-// export async function getVacunas() {
-//   await client.connect();
-//   return vacunas.find().toArray();
-// }
-
-// export async function getVacunasUsuario(userId) {
-//   await client.connect();
-//   return vacunas.find({ userId }).toArray();
-// }
-
-// export async function guardarVacuna(vacuna) {
-//   await client.connect();
-//   await vacunas.insertOne(vacuna);
-//   return vacuna;
-// }
-
-
-
-
 import { MongoClient, ObjectId } from "mongodb";
 
 const client = new MongoClient(
